@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:yard_manager_app/content_container.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -36,12 +38,13 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 245, 245, 245),
+        backgroundColor: const Color.fromARGB(255, 238, 236, 196),
         appBar: AppBar(
+          backgroundColor: Colors.green,
           title: const Image(
             image: AssetImage('assets/images/YardManagerBanner.png'),
-            height: 230,
-            width: 230,
+            height: 250,
+            width: 250,
           ),
           centerTitle: true,
           actions: [
@@ -54,50 +57,6 @@ class MyHomePage extends StatelessWidget {
             ),
           ],
         ),
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/images/YardManager.png'),
-                fit: BoxFit.contain,
-                opacity: 0.6),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Color.fromARGB(141, 0, 0, 0),
-                      border: OutlineInputBorder(),
-                      labelText: 'Enter your username',
-                      hintStyle: TextStyle(color: Colors.white),
-                      labelStyle: TextStyle(color: Colors.white),
-                    ),
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-                SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Color.fromARGB(141, 0, 0, 0),
-                      labelText: 'Enter your password',
-                      hintStyle: TextStyle(color: Colors.white),
-                      labelStyle: TextStyle(color: Colors.white),
-                    ),
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-              ],
-            ),
-          ),
-        ));
+        body: const ContentContainer());
   }
 }
