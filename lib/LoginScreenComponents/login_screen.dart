@@ -1,7 +1,29 @@
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen(this.logIn, {super.key});
+  final Future<void> Function(String, String) logIn;
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  var email = '';
+
+  var password = '';
+
+  void setEmail(String value) {
+    setState(() {
+      email = value;
+    });
+  }
+
+  void setPassword(String value) {
+    setState(() {
+      password = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +46,9 @@ class LoginScreen extends StatelessWidget {
                 color: const Color.fromARGB(141, 0, 0, 0),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const TextField(
-                decoration: InputDecoration(
+              child: TextField(
+                onChanged: (value) => setEmail(value),
+                decoration: const InputDecoration(
                   labelText: 'Enter your username',
                   hintStyle: TextStyle(color: Colors.white),
                   labelStyle: TextStyle(color: Colors.white),
@@ -33,7 +56,7 @@ class LoginScreen extends StatelessWidget {
                   enabledBorder:
                       UnderlineInputBorder(borderSide: BorderSide.none),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
@@ -47,9 +70,10 @@ class LoginScreen extends StatelessWidget {
                 color: const Color.fromARGB(141, 0, 0, 0),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const TextField(
+              child: TextField(
+                onChanged: (value) => setPassword(value),
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Enter your password',
                   hintStyle: TextStyle(color: Colors.white),
                   labelStyle: TextStyle(color: Colors.white),
@@ -57,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                   enabledBorder:
                       UnderlineInputBorder(borderSide: BorderSide.none),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
@@ -66,7 +90,9 @@ class LoginScreen extends StatelessWidget {
               height: 20,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                widget.logIn(email, password);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 padding:

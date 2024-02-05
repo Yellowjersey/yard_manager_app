@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen(this.logOut, {super.key});
+
+  final void Function() logOut;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
