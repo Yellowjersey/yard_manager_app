@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yard_manager_app/HomeScreenComponents/home_screen.dart';
 import 'package:yard_manager_app/LoginScreenComponents/login_screen.dart';
 
 class ContentContainer extends StatefulWidget {
@@ -9,8 +10,9 @@ class ContentContainer extends StatefulWidget {
 }
 
 class _ContentContainerState extends State<ContentContainer> {
+  var isLogin = false;
   @override
   Widget build(BuildContext context) {
-    return const LoginScreen();
+    return (isLogin ? const LoginScreen() : const HomeScreen());
   }
 }
