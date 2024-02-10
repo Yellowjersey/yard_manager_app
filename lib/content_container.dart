@@ -5,45 +5,86 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yard_manager_app/HomeScreenComponents/home_screen.dart';
 import 'package:yard_manager_app/LoginScreenComponents/login_screen.dart';
 
+import 'package:yard_manager_app/RegisterScreenComponents/register_screen.dart';
+
 class ContentContainer extends StatefulWidget {
   const ContentContainer(this.client, {super.key});
 
   final SupabaseClient client;
 
   @override
-  State<ContentContainer> createState() => _ContentContainerState(client);
+  State<ContentContainer> createState() => _ContentContainerState();
 }
 
 class _ContentContainerState extends State<ContentContainer> {
-  _ContentContainerState(this.client);
-
   var isLogin = true;
-  final SupabaseClient client;
+  var loggedIn = false;
+  var userImage = '';
+  var userAccountImage;
+  var userInfo = {};
 
-  void switchScreen() {
+  Future<void> getUserData() async {
+    final user = widget.client.auth.currentUser;
+
+    if (user != null) {
+      final response = await widget.client
+          .from('Users')
+          .select()
+          .eq('id', user.id) // Assuming 'id' is the column with the UUID
+          .single();
+
+      userInfo = response;
+      for (var key in userInfo.keys) {
+        if (key == 'user_image') {
+          userAccountImage = userInfo[key];
+        }
+      }
+
+      userImage = widget.client.storage
+          .from('user_images')
+          .getPublicUrl('/${user.id}/$userAccountImage');
+
+      setState(() {});
+    }
+  }
+
+  void loginRegisterScreenToggle() {
+    if (isLogin) {
+      setState(() {
+        isLogin = false;
+      });
+    } else {
+      setState(() {
+        isLogin = true;
+      });
+    }
+  }
+
+  void setScreenToLoggedIn() {
     setState(() {
-      isLogin = !isLogin;
+      getUserData();
+
+      loggedIn = true;
     });
   }
 
-  Future<void> login(String email, String password) async {
-    final response = await client.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
-
-    if (response.session == null) {
-      // Handle error
-      print('Login failed: ');
-    } else {
-      // Handle success
-      print('Login successful');
-      switchScreen();
-    }
+  void setScreenToLoggedOut() {
+    setState(() {
+      loggedIn = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return (isLogin ? LoginScreen(login) : HomeScreen(switchScreen));
+    // return (isLogin ? LoginScreen(login) : HomeScreen(switchScreen));
+    return (loggedIn
+        ? HomeScreen(widget.client, setScreenToLoggedOut,
+            userInfo: userInfo, userImage: userImage)
+        : (!isLogin
+            ? RegisterScreen(client: widget.client)
+            : LoginScreen(
+                widget.client,
+                onLoggedIn: setScreenToLoggedIn,
+              )));
   }
 }

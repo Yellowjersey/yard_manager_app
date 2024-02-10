@@ -1,29 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen(this.logIn, {super.key});
-  final Future<void> Function(String, String) logIn;
+  const LoginScreen(this.client, {super.key, required this.onLoggedIn});
+
+  final void Function() onLoggedIn;
+
+  final SupabaseClient client;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  var email = '';
-
-  var password = '';
-
-  void setEmail(String value) {
-    setState(() {
-      email = value;
-    });
-  }
-
-  void setPassword(String value) {
-    setState(() {
-      password = value;
-    });
-  }
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +38,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
-                onChanged: (value) => setEmail(value),
+                controller: emailController,
                 decoration: const InputDecoration(
-                  labelText: 'Enter your username',
+                  labelText: 'Enter your Email',
                   hintStyle: TextStyle(color: Colors.white),
                   labelStyle: TextStyle(color: Colors.white),
                   border: null,
@@ -71,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
-                onChanged: (value) => setPassword(value),
+                controller: passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Enter your password',
@@ -90,11 +81,28 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 20,
             ),
             ElevatedButton(
-              onPressed: () {
-                widget.logIn(email, password);
+              onPressed: () async {
+                final sm = ScaffoldMessenger.of(context);
+                final authResponse =
+                    await widget.client.auth.signInWithPassword(
+                  email: emailController.text,
+                  password: passwordController.text,
+                );
+
+                widget.onLoggedIn();
+
+                sm.showSnackBar(
+                  SnackBar(
+                    content: Text('Logged In: ${authResponse.user?.email}'),
+                  ),
+                );
+
+                emailController.clear();
+                passwordController.clear();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                 textStyle: const TextStyle(fontSize: 20),

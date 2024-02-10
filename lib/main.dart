@@ -4,6 +4,8 @@ import 'package:yard_manager_app/content_container.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await Supabase.initialize(
     url: 'https://sqdpatjugbkiwgugfjzy.supabase.co',
     anonKey:
@@ -48,24 +50,6 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 238, 236, 196),
-        appBar: AppBar(
-          backgroundColor: Colors.green,
-          title: const Image(
-            image: AssetImage('assets/images/YardManagerBanner.png'),
-            height: 250,
-            width: 250,
-          ),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon:
-                  const Image(image: AssetImage('assets/images/YardMan1.png')),
-              onPressed: () {
-                // Navigate to the settings page
-              },
-            ),
-          ],
-        ),
-        body: const ContentContainer());
+        body: ContentContainer(supabase));
   }
 }
