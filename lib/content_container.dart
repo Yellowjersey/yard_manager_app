@@ -22,6 +22,7 @@ class _ContentContainerState extends State<ContentContainer> {
   var userImage = '';
   var userAccountImage;
   var userInfo = {};
+  var clients = [];
 
   Future<void> getUserData() async {
     final user = widget.client.auth.currentUser;
@@ -45,6 +46,9 @@ class _ContentContainerState extends State<ContentContainer> {
           .getPublicUrl('/${user.id}/$userAccountImage');
 
       setState(() {});
+
+      clients = await widget.client.from('Clients').select('*').eq(
+          'user_UUID', user.id); // Assuming 'id' is the column with the UUID
     }
   }
 
@@ -79,7 +83,7 @@ class _ContentContainerState extends State<ContentContainer> {
     // return (isLogin ? LoginScreen(login) : HomeScreen(switchScreen));
     return (loggedIn
         ? HomeScreen(widget.client, setScreenToLoggedOut,
-            userInfo: userInfo, userImage: userImage)
+            userInfo: userInfo, userImage: userImage, clients: clients)
         : (!isLogin
             ? RegisterScreen(client: widget.client)
             : LoginScreen(
