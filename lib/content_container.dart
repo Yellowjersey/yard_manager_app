@@ -21,6 +21,7 @@ class _ContentContainerState extends State<ContentContainer> {
   var loggedIn = false;
   var userImage = '';
   var userAccountImage;
+  var clientImage = '';
   var userInfo = {};
   var clients = [];
 
@@ -45,11 +46,33 @@ class _ContentContainerState extends State<ContentContainer> {
           .from('user_images')
           .getPublicUrl('/${user.id}/$userAccountImage');
 
-      setState(() {});
-
       clients = await widget.client.from('Clients').select('*').eq(
           'user_UUID', user.id); // Assuming 'id' is the column with the UUID
+
+      for (var client in clients) {
+        clientImage = widget.client.storage.from('client_images').getPublicUrl(
+            '/${user.id}/${client['client_UUID']}/${client['client_image']}');
+        client['client_image'] = clientImage;
+      }
+
+      for (var client in clients) {
+        final propertyImages = client['client_property_images'];
+        final propertyImageList = [];
+
+        for (var image in propertyImages) {
+          final propertyImage = widget.client.storage
+              .from('client_images')
+              .getPublicUrl(
+                  '${user.id}/${client['client_UUID']}/property_images/$image');
+          propertyImageList.add(propertyImage);
+        }
+
+        client['client_property_images'] = propertyImageList;
+        print(propertyImageList);
+      }
     }
+
+    setState(() {});
   }
 
   void loginRegisterScreenToggle() {

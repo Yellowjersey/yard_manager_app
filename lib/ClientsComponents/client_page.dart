@@ -11,15 +11,22 @@ class ClientPage extends StatefulWidget {
 }
 
 class _ClientPageState extends State<ClientPage> {
+  // void getClients() async {
+
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.clients.length,
-      itemBuilder: (context, index) {
-        return widget.clients
-            .map((client) => ClientCard(client: client))
-            .toList()[index];
-      },
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+        itemCount: widget.clients.length,
+        itemBuilder: (context, index) {
+          return widget.clients
+              .map((client) => ClientCard(client: client))
+              .toList()[index];
+        },
+      ),
     );
   }
 }

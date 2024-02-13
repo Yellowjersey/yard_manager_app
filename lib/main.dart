@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yard_manager_app/SplashPage/splash_page.dart';
 
 import 'package:yard_manager_app/content_container.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: MyHomePage(),
+      home: SplashScreen(),
     );
   }
 }

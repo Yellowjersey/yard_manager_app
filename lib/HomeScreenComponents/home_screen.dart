@@ -28,22 +28,26 @@ class _HomeScreenState extends State<HomeScreen> {
   var _currentScreen;
 
   void setCurrentScreen() {
-    if (_currentIndex == 0) {
-      _currentScreen = const Center(
-        child: Text('Welcome to Yard Manager'),
-      );
-    } else if (_currentIndex == 1) {
-      _currentScreen = Center(
-        child: ClientPage(clients: widget.clients),
-      );
-    } else if (_currentIndex == 2) {
-      _currentScreen = const Center(
-        child: Text('Create Invoice'),
-      );
-    } else if (_currentIndex == 3) {
-      _currentScreen = const Center(
-        child: Text('Client Schedule'),
-      );
+    if (widget.clients.isEmpty) {
+      _currentScreen = const Center(child: CircularProgressIndicator());
+    } else {
+      if (_currentIndex == 0) {
+        _currentScreen = const Center(
+          child: Text('Welcome to Yard Manager'),
+        );
+      } else if (_currentIndex == 1) {
+        _currentScreen = Center(
+          child: ClientPage(clients: widget.clients),
+        );
+      } else if (_currentIndex == 2) {
+        _currentScreen = const Center(
+          child: Text('Create Invoice'),
+        );
+      } else if (_currentIndex == 3) {
+        _currentScreen = const Center(
+          child: Text('Client Schedule'),
+        );
+      }
     }
   }
 
@@ -56,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    setCurrentScreen();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 238, 236, 196),
       appBar: AppBar(
