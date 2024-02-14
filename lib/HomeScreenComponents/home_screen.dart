@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:yard_manager_app/AddClientComponents/add_client_page.dart';
 import 'package:yard_manager_app/ClientsComponents/client_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -145,6 +146,20 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Client Schedule',
           )
         ],
+      ),
+      floatingActionButton: IconButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.green),
+        ),
+        icon: const Icon(
+          Icons.add,
+          size: 30,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => AddClientPage(client: widget.client)));
+        },
       ),
       body: Center(
         child: _currentScreen,

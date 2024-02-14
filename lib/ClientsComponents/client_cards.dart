@@ -20,6 +20,12 @@ class _ClientCardState extends State<ClientCard> {
     propertyImages = List<String>.from(widget.client['client_property_images']);
   }
 
+  generatePropertyImages() {
+    return propertyImages
+        .map((e) => ClientPropertyImages(propertyImage: e))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -103,17 +109,49 @@ class _ClientCardState extends State<ClientCard> {
               ),
             ],
           ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.black),
+              ),
+            ),
+            width: double.infinity,
+            child: const Center(
+              child: Text(
+                'Property Images',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
           SizedBox(
             height: 200,
-            child: ListView.builder(
-              itemCount: propertyImages.length,
-              itemBuilder: ((context, index) {
-                return ClientPropertyImages(
-                    key: ObjectKey(propertyImages[index]),
-                    propertyImage: propertyImages[index]);
-              }),
-              scrollDirection: Axis.horizontal,
-            ),
+            child: generatePropertyImages().isEmpty
+                ? const Center(
+                    child: Text('No Property Images'),
+                  )
+                : ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      ...generatePropertyImages(),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.add_circle,
+                          size: 50,
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                    ],
+                  ),
           )
         ],
       ),
