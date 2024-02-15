@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:yard_manager_app/AddClientComponents/add_client_form.dart';
 
 class AddClientPage extends StatefulWidget {
-  const AddClientPage({super.key, required this.client});
+  const AddClientPage(
+      {super.key, required this.client, required this.getUserData});
+
+  final Function() getUserData;
 
   final client;
 
@@ -24,7 +27,8 @@ class _AddClientPageState extends State<AddClientPage> {
         ),
         centerTitle: true,
       ),
-      body: AddClientForm(client: widget.client),
+      body:
+          AddClientForm(client: widget.client, getUserData: widget.getUserData),
     );
   }
 }

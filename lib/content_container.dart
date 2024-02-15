@@ -106,12 +106,17 @@ class _ContentContainerState extends State<ContentContainer> {
     // return (isLogin ? LoginScreen(login) : HomeScreen(switchScreen));
     return (loggedIn
         ? HomeScreen(widget.client, setScreenToLoggedOut,
-            userInfo: userInfo, userImage: userImage, clients: clients)
+            userInfo: userInfo,
+            userImage: userImage,
+            clients: clients,
+            getUserData: getUserData)
         : (!isLogin
-            ? RegisterScreen(client: widget.client)
+            ? RegisterScreen(
+                client: widget.client, toggleLogin: loginRegisterScreenToggle)
             : LoginScreen(
                 widget.client,
                 onLoggedIn: setScreenToLoggedIn,
+                toggleRegister: loginRegisterScreenToggle,
               )));
   }
 }

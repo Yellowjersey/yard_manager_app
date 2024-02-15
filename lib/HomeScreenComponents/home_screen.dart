@@ -10,12 +10,13 @@ class HomeScreen extends StatefulWidget {
       {super.key,
       required this.userInfo,
       required this.userImage,
-      required this.clients});
+      required this.clients,
+      required this.getUserData});
 
   final List clients;
   final userInfo;
   final String userImage;
-
+  final Function() getUserData;
   final SupabaseClient client;
 
   final void Function() logOut;
@@ -158,7 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AddClientPage(client: widget.client)));
+              builder: (context) => AddClientPage(
+                  client: widget.client, getUserData: widget.getUserData)));
         },
       ),
       body: Center(

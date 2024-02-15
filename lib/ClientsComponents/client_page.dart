@@ -23,7 +23,12 @@ class _ClientPageState extends State<ClientPage> {
         itemCount: widget.clients.length,
         itemBuilder: (context, index) {
           return widget.clients
-              .map((client) => ClientCard(client: client))
+              .map((client) => Column(
+                    children: [
+                      ClientCard(client: client),
+                      const SizedBox(height: 10),
+                    ],
+                  ))
               .toList()[index];
         },
       ),

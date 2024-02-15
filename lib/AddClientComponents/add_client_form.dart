@@ -6,7 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 class AddClientForm extends StatefulWidget {
-  const AddClientForm({super.key, required this.client});
+  const AddClientForm(
+      {super.key, required this.client, required this.getUserData});
+
+  final Function() getUserData;
 
   final client;
 
@@ -32,6 +35,59 @@ class _AddClientFormState extends State<AddClientForm> {
   final _clientDueDateController = TextEditingController();
   final _clientRepeatFrequencyController = TextEditingController();
   final _upcomingDueDates = [];
+
+  final stateOptions = {
+    'TN': 'Tennessee',
+    'AL': 'Alabama',
+    'AK': 'Alaska',
+    'AZ': 'Arizona',
+    'AR': 'Arkansas',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'IA': 'Iowa',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'ME': 'Maine',
+    'MD': 'Maryland',
+    'MA': 'Massachusetts',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MS': 'Mississippi',
+    'MO': 'Missouri',
+    'MT': 'Montana',
+    'NE': 'Nebraska',
+    'NV': 'Nevada',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NY': 'New York',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VT': 'Vermont',
+    'VA': 'Virginia',
+    'WA': 'Washington',
+    'WV': 'West Virginia',
+    'WI': 'Wisconsin',
+    'WY': 'Wyoming',
+  };
 
   @override
   void initState() {
@@ -70,12 +126,18 @@ class _AddClientFormState extends State<AddClientForm> {
         _clientImageBytes = fileBytes;
       });
     }
+    print(_clientImageController);
   }
 
-  void _addClient() {
+  void _addClient() async {
     if (_formKey.currentState!.validate()) {
-      widget.client.from('Clients').upsert({
-        'client_UUID': const Uuid().v4(),
+      // Format DateTime objects
+      String formattedDueDate = _clientDueDateController.text;
+      final clientUUID = const Uuid().v4();
+
+      // Continue with other data
+      await widget.client.from('Clients').insert({
+        'client_UUID': clientUUID,
         'client_name': _clientNameController.text,
         'client_address': _clientAddressController.text,
         'client_phone': _clientPhoneController.text,
@@ -91,14 +153,22 @@ class _AddClientFormState extends State<AddClientForm> {
         'client_zipcode': _clientZipController.text,
         'client_state': _clientStateController.text,
         'client_city': _clientCityController.text,
-        'due_date': _clientDueDateController.text,
-        'repeate_frequency': _clientRepeatFrequencyController.text,
-        'upcoming_due_dates': _upcomingDueDates,
+        'due_date': formattedDueDate, // Use formatted due date
+        'repeat_frequency': _clientRepeatFrequencyController.text,
+        'upcoming_due_dates': _upcomingDueDates
+            .map((date) => date.toIso8601String())
+            .toList(), // Format upcoming due dates
         'done_for_day': [],
         'current_work_status': {},
         'work_status_history': [],
       });
+
+      await widget.client.storage.from('client_images').uploadBinary(
+          '${widget.client.auth.currentUser!.id}/$clientUUID/$_clientImageController',
+          _clientImageBytes!);
     }
+    widget.getUserData();
+    Navigator.pop(context);
   }
 
   Future<void> _selectdate() async {
@@ -312,18 +382,31 @@ class _AddClientFormState extends State<AddClientForm> {
                       const SizedBox(
                         height: 20,
                       ),
-                      TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter client state';
-                          }
-                          return null;
-                        },
-                        controller: _clientStateController,
-                        decoration: const InputDecoration(
-                          labelText: 'Client State',
-                          border: OutlineInputBorder(),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Client State:',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          DropdownButton(
+                            value: _clientStateController.text != ''
+                                ? _clientStateController.text
+                                : null,
+                            onChanged: (value) {
+                              setState(() {
+                                _clientStateController.text = value.toString();
+                              });
+                            },
+                            items: [
+                              for (var state in stateOptions.entries)
+                                DropdownMenuItem(
+                                  value: state.key,
+                                  child: Text(state.value),
+                                ),
+                            ],
+                          ),
+                        ],
                       ),
                       const SizedBox(
                         height: 20,
