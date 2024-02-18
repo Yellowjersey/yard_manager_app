@@ -24,6 +24,7 @@ class _ContentContainerState extends State<ContentContainer> {
   var clientImage = '';
   var userInfo = {};
   var clients = [];
+  var sortedClients = [];
 
   Future<void> getUserData() async {
     final user = widget.client.auth.currentUser;
@@ -46,8 +47,11 @@ class _ContentContainerState extends State<ContentContainer> {
           .from('user_images')
           .getPublicUrl('/${user.id}/$userAccountImage');
 
-      clients = await widget.client.from('Clients').select('*').eq(
-          'user_UUID', user.id); // Assuming 'id' is the column with the UUID
+      clients = await widget.client
+          .from('Clients')
+          .select('*')
+          .eq('user_UUID', user.id);
+      // Assuming 'id' is the column with the UUID
 
       for (var client in clients) {
         clientImage = widget.client.storage.from('client_images').getPublicUrl(
@@ -68,8 +72,13 @@ class _ContentContainerState extends State<ContentContainer> {
         }
 
         client['client_property_images'] = propertyImageList;
-        print(propertyImageList);
       }
+
+      sortedClients = List.from(clients)
+        ..sort((a, b) => a['client_name']
+            .toString()
+            .toLowerCase()
+            .compareTo(b['client_name'].toString().toLowerCase()));
     }
 
     setState(() {});
@@ -108,7 +117,7 @@ class _ContentContainerState extends State<ContentContainer> {
         ? HomeScreen(widget.client, setScreenToLoggedOut,
             userInfo: userInfo,
             userImage: userImage,
-            clients: clients,
+            clients: sortedClients,
             getUserData: getUserData)
         : (!isLogin
             ? RegisterScreen(

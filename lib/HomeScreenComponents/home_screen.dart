@@ -39,7 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       } else if (_currentIndex == 1) {
         _currentScreen = Center(
-          child: ClientPage(clients: widget.clients),
+          child: ClientPage(
+              clients: widget.clients,
+              supabaseClient: widget.client,
+              getUserData: widget.getUserData),
         );
       } else if (_currentIndex == 2) {
         _currentScreen = const Center(
